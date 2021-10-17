@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="{{ url_for('static', filename='js/sesion.js') }}"> </script>
+    <script src="{{ url_for('static', filename='js/validacion.js') }}"> </script>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" type="text/css">
 
@@ -23,18 +24,39 @@
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
                                 <div class="card-header"><h3 class="text-center font-weight-light my-4">XPENNG</h3></div>
                                 <div class="card-body">
-                                    <form  name="formSesion"  action=""  method="get" onsubmit="return validar_sesion();">
+                                    <form  name="formSesion"  action="{{ url_for('sesion') }}"  method="post" onsubmit="">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="usuario" type="text"  />
+
+                                            <input class="form-control" id="usuario" name="usuario"  type="text"  />
                                             <label for="inputEmail">Usuario</label>
+                                            
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="contraseña" type="password"  />
+
+                                            <input class="form-control" id="contraseña" name="contraseña" type="password"  />
                                             <label for="inputPassword">Contraseña</label>
+
                                         </div>
+
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0"> 
                                             <input class="btn btn-primary btn-user btn-block" type="submit" value="Ingresar">                                           
-                                           </div>                                          
+                                           </div> 
+                                        
+
+                                           {% with messages = get_flashed_messages() %}
+                                           {% if messages %}
+                                               <ul class=flashes>
+                                                   {% for message in messages %}
+
+                                                    <script>
+                                                        window.alert('{{ message }}')                                                        
+                                                    </script>
+                                                      
+                                                   {% endfor %}
+                                               </ul>
+                                           {% endif %}
+                                       {% endwith %}
+
                                     </form>
                                 </div>
                               </div>

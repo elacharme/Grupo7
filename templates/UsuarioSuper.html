@@ -1,42 +1,14 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.84.0">
-    <title>Pagina XPENNG</title>
 
-        
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"> </script>
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"> </script>
-    <script src="{{ url_for('static', filename='js/sesion.js') }}"> </script>
+{% block title %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" type="text/css">
+<title>USUARIO-XPENNG</title>
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>  
-    
-  </head>
+{% endblock %}
 
 
+{% extends 'base.html' %}
 
-  <body>
+{% block contenido %}
     
 <header class="navbar navbar-dark sticky-top  bg-primary flex-md-nowrap p-0 shadow ">
   <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 bg-primary" href="/Dashboard">DASHBOARD-XPENNG</a>
@@ -122,31 +94,49 @@
 
       <img src="{{ url_for('static', filename='img/grupo-de-usuarios.png') }}" width="200" alt="Aqui va una imagen">  
       
-      
-
-
-      
-        <div class="row">
-
-          <div class="col" > 
-            <input class="form-control me-sm-2" type="text" placeholder="Nombre">
-            
-          </div>
-
-          <div class="col">
-            
-            <input class="form-control me-sm-2" type="text" placeholder="Contraseña">  
-          </div>
-
-          <div class="col">
-            
-            <input class="form-control me-sm-2" type="text" placeholder="Rol">          
-          </div>
-
-          <div class="col">
            
-            <button class="btn btn-secondary my-2 my-sm-0 form-control me-sm-2" type="submit">Crear</button>
-          </div>
+        
+
+        <form  name="formRegister"  action="{{ url_for('usuario_super') }}"  method="post" onsubmit="">  
+
+          <div class="row">
+                  <div class="col" > 
+                    <input class="form-control me-sm-2" type="text" placeholder="Nombre" name="usuario" id="usuario">
+                    
+                  </div>
+
+                  <div class="col">
+                    
+                    <input class="form-control me-sm-2" type="text" placeholder="Contraseña" name="password" id="password">  
+                  </div>
+
+                  <div class="col">
+                    
+                    <input class="form-control me-sm-2" type="text" placeholder="Rol" name="rol"  id="rol">          
+                  </div>
+
+                  <div class="col">
+                  
+                    <button class="btn btn-secondary my-2 my-sm-0 form-control me-sm-2" type="submit">Crear</button>
+                  </div>
+
+              
+
+                      {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                          <ul class=flashes>
+                              {% for message in messages %}
+
+                              <script>
+                                  window.alert('{{ message }}')                                                        
+                              </script>
+                                
+                              {% endfor %}
+                          </ul>
+                      {% endif %}
+                  {% endwith %}
+
+          </form>
 
         </div>
       
@@ -159,14 +149,13 @@
 
 
 
-      
+     
       <div class="table-responsive">
  
-        <form class="d-flex">
-          <input class="form-control me-sm-2" type="text" placeholder="Buscar">
+        <form class="d-flex" action="{{ url_for('consulta_super') }}" method="post" onsubmit="">
+          <input class="form-control me-sm-2" type="text" placeholder="Buscar" name="usuario" id="usuario">
           <button class="btn btn-secondary my-2 my-sm-0" type="submit">Buscar</button>
-        </form>
-
+        </form>      
 
         <br>
     
@@ -182,17 +171,20 @@
               <th class="table-primary" scope="col">Eliminar</th>              
             </tr>
           </thead>
-          <tbody>
-            <tr class="table-active">
-              <th  scope="row">001</th>
-              <td >Gabriel Betin</td>
-              <td >Gabo123</td>
-              <td >Programador</td>
-              <td href="#"> <a href="" onclick="editarUsuario()">Editar</a>   </td>
-              <td href="#"> <a href="#">Eliminar</a>   </td>
-            </tr>
 
-                   
+
+          <tbody>
+            <tr class="table-active"></tr>
+              {% for usu in usuarios %}
+              
+                <th  scope="row">{% print(usu[0]) %}</th>
+                <td >{% print(usu[1]) %}</td>
+                <td >{% print(usu[2]) %}</td>
+                <td >{% print(usu[3]) %}</td>
+                <td > <a href="#" onclick="editarUsuario()">Editar</a>   </td>
+                <td > <a href="#" onclick="eliminarUsuario()">Eliminar</a>   </td>
+              </tr>
+              {% endfor %}                   
           
           </tbody>
         </table>    
@@ -205,7 +197,6 @@
 </div>
 
 
-  </body>
-</html>
+{% endblock %}
 
 
