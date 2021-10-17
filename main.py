@@ -16,7 +16,7 @@ app.secret_key = os.urandom(24)
 
 #--------------------------------------------------------------------------------------------------
 
-# Inicio de session
+# Inicio de session PARA VER SU CAMBIA ESTA VAINA
 @app.route('/', methods=['GET', 'POST'])
 def sesion():
   
