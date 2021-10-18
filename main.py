@@ -103,7 +103,7 @@ def usuario_super():
         print(usuario)
         if user_nombre is not None:
             error = "Usuario ya existe."
-        flash(error)   
+            flash(error)   
         
         if error is not None:
             return render_template("UsuarioSuper.html")
@@ -136,11 +136,14 @@ def consulta_super():
             usuarios = db.execute(
             'SELECT * FROM Usuarios WHERE usuario = ? ', (usuario,) 
             ).fetchall()
+            if len(usuarios) < 1 :
+               error = "Usuario NO existe."
+               flash(error) 
+            
             
   
     return render_template("UsuarioSuper.html", usuarios=usuarios)
-
-
+    
 
 @app.route('/Dashboard/UsuarioAdmin/select', methods=['GET', 'POST'])
 def consulta_admin():
@@ -155,6 +158,9 @@ def consulta_admin():
             usuarios = db.execute(
             'SELECT * FROM Usuarios WHERE usuario = ? ', (usuario,) 
             ).fetchall()
+            if len(usuarios) < 1:
+               error = "Usuario NO existe."
+               flash(error)            
             
   
     return render_template("UsuarioAdmin.html", usuarios=usuarios)    
@@ -163,9 +169,9 @@ def consulta_admin():
 #------------------------------------------------------------------------------------------------------    
 # Para editar usuarios    
    
-@app.route('/Dashboard/UsuarioSuper/editarUsuario', methods=['GET', 'POST'])
-@app.route('/Dashboard/UsuarioAdmin/editarUsuario', methods=['GET', 'POST'])
-def editar_usuario():
+@app.route('/Dashboard/UsuarioSuper/editarUsuario/<nom_usuario>', methods=['GET', 'POST'])
+@app.route('/Dashboard/UsuarioAdmin/editarUsuario/<nom_usuario>', methods=['GET', 'POST'])
+def editar_usuario(nom_usuario):
     if request.method == 'POST':                  
             usuario = request.form['usuario']         
             password = request.form['password']
@@ -196,17 +202,29 @@ def editar_usuario():
                     )
                                              
                 db.commit()
-                flash('Usuario Editado') 
-
-    return render_template("editarUsuario.html")
+                flash('Usuario Editado')
+                usuarios = db.execute(
+                    'SELECT * FROM Usuarios WHERE usuario = ? ', (nom_usuario,) 
+                    ).fetchall()
+                print(usuarios)   
+                return render_template("editarUsuario.html",  usuarios = usuarios , nom_usuario=nom_usuario)
+         
+    else:
+              
+        db = get_db()
+        usuarios = db.execute(
+            'SELECT * FROM Usuarios WHERE usuario = ? ', (nom_usuario,) 
+            ).fetchall()
+        print(usuarios)   
+        return render_template("editarUsuario.html",  usuarios = usuarios , nom_usuario=nom_usuario)
 
 #----------------------------------------------------------------------------------------------------------
 
 #Para Eliminar usuarios
 
-@app.route('/Dashboard/UsuarioSuper/eliminarUsuario', methods=['GET', 'POST'])
-@app.route('/Dashboard/UsuarioAdmin/eliminarUsuario', methods=['GET', 'POST'])    
-def eliminar_usuario():
+@app.route('/Dashboard/UsuarioSuper/eliminarUsuario/<nom_usuario>', methods=['GET', 'POST'])
+@app.route('/Dashboard/UsuarioAdmin/eliminarUsuario/<nom_usuario>', methods=['GET', 'POST'])    
+def eliminar_usuario(nom_usuario):
     if request.method == 'POST':                  
             usuario = request.form['usuario']         
                
@@ -228,9 +246,21 @@ def eliminar_usuario():
                     )
                                             
                 db.commit()
-                flash('Usuario Eliminado') 
+                flash('Usuario Eliminado')
+                return render_template("eliminarMensaje.html")
+            
 
-    return render_template("eliminarUsuario.html")
+
+    else:
+        db = get_db()
+        usuarios = db.execute(
+            'SELECT * FROM Usuarios WHERE usuario = ? ', (nom_usuario,) 
+            ).fetchall()
+        print(usuarios)
+        
+        return render_template("eliminarUsuario.html",  usuarios = usuarios , nom_usuario=nom_usuario)
+                 
+       
 
 #----------------------------------------------------------------------------------------
 

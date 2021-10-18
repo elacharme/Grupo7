@@ -173,7 +173,7 @@
           </thead>
 
 
-          <tbody>
+          <tbody>s
             <tr class="table-active"></tr>
               {% for usu in usuarios %}
               
@@ -181,8 +181,8 @@
                 <td >{% print(usu[1]) %}</td>
                 <td >{% print(usu[2]) %}</td>
                 <td >{% print(usu[3]) %}</td>
-                <td > <a href="#" onclick="editarUsuario()">Editar</a>   </td>
-                <td > <a href="#" onclick="eliminarUsuario()">Eliminar</a>   </td>
+                <td > <a href="#" onclick="editarUsuario('{{usu[1]}}')">Editar</a>   </td>
+                <td > <a href="#" onclick="eliminarUsuario('{{usu[1]}}')">Eliminar</a>   </td>
               </tr>
               {% endfor %}                   
           
