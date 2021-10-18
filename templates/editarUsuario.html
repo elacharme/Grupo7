@@ -19,19 +19,30 @@
                     <div class="card shadow-lg border-0 rounded-lg mt-5">
                         <div class="card-header"><h3 class="text-center font-weight-light my-4">XPENNG</h3></div>
                         <div class="card-body">
-                            <form  name="formEdit"  action="{{ url_for('editar_usuario') }}"  method="post" onsubmit="" >
+
+
+                            <form  name="formEdit"  action="{{ url_for('editar_usuario' , nom_usuario=usuarios[0][1]) }} "  method="post" onsubmit="" >
+                                                                                                         
+                                
+                                
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="usuario" type="text" name="usuario" id="usuario" />
-                                    <label for="inputEmail">Nombre</label>
+
+                                    <input class="form-control" id="usuario" type="text" name="usuario" id="usuario" value= "{{usuarios[0][1]}}" />
+                                    <label for="inputEmail">Usuario</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password" name="password" id="password" />
+                                    <input class="form-control" id="contraseña" type="password" name="password" id="password" value="{{usuarios[0][2]}}" />
                                     <label for="inputPassword">Contraseña</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password" name="rol"  id="rol" />
+                                    <input class="form-control" id="contraseña" type="ptext" name="rol"  id="rol" value="{{usuarios[0][3]}}" />
                                     <label for="inputPassword">Rol</label>
                                 </div>
+                                   
+                                                                
+                                                        
+                                                                       
+                                                                 
                                 <div class="d-flex align-items-center justify-content-between mt-4 mb-0"> 
                                     <input class="btn btn-primary btn-user btn-block" type="submit" value="Editar">                                           
                                    </div>   
@@ -51,7 +62,8 @@
                                                     </ul>
                                                 {% endif %}
                                             {% endwith %}
-
+                                                      
+                                           
                             </form>
                         </div>
                       </div>
