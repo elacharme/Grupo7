@@ -8,6 +8,9 @@ import os
 from db import get_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session, g
+from utils import isUsernameValid, isEmailValid, isPasswordValid
+import yagmail as yagmail
+import random
 
 
 
@@ -84,46 +87,67 @@ def cargar_usuario_registrado():
 
 @app.route('/Dashboard/UsuarioSuper', methods=['GET', 'POST'])
 def usuario_super():
-    if request.method == 'POST':                  
-        usuario = request.form['usuario']         
-        password = request.form['password']
-        rol = request.form['rol']    
 
-        error = None
-        db = get_db()
+    try:
+        if request.method == 'POST':                  
+            usuario = request.form['usuario'] 
+            email = request.form['email']        
+            password = str(random.randint(99999,999999))
+            rol = request.form['rol'] 
+              
 
-        if not usuario:
-            error = "Usuario requerido."
-            flash(error)
-        if not password:
-            error = "Contraseña requerida."
-            flash(error)
-        if not rol:
-            error = "Rol requerido."
-            flash(error)   
+            error = None
+            db = get_db()
 
-        user_nombre = db.execute(
-            'SELECT * FROM Usuarios WHERE usuario = ? ', (usuario,) 
-            ).fetchone()
-        print(usuario)
-        if user_nombre is not None:
-            error = "Usuario ya existe."
-            flash(error)   
-        
-        if error is not None:
-            return render_template("UsuarioSuper.html")
-        else:
-        # Seguro:
-            password_cifrado = generate_password_hash(password)
-            db.execute(
-                'INSERT INTO Usuarios (usuario,contrasena,rol) VALUES (?,?,?)',
-                (usuario,password_cifrado,rol)
-                )
-                               
-            db.commit()
-            flash('Usuario creado') 
+            if not usuario:
+                error = "Usuario requerido."
+                flash(error)
+            if not email:
+                error = "Email requerido."
+                flash(error)
+            if not rol:
+                error = "Rol requerido."
+                flash(error)  
 
-    return render_template("UsuarioSuper.html")
+            if not isUsernameValid(usuario):
+                error = "El usuario debe ser alfanumerico o incluir solo '.','_','-'"
+                flash(error)
+            if not isEmailValid(email):
+                error = 'Correo invalido'
+                flash(error)
+                #if not isPasswordValid(password):
+                #    error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
+                #    flash(error)      
+
+            user_email = db.execute(
+                'SELECT * FROM Usuarios WHERE email = ? ', (email,) 
+                ).fetchone()
+            print(user_email)
+            if user_email is not None:
+                error = "Email ya existe."
+                flash(error)   
+            
+            if error is not None:
+                return render_template("UsuarioSuper.html")
+            else:
+            # Seguro:
+                password_cifrado = generate_password_hash(password)
+                db.execute(
+                    'INSERT INTO Usuarios (usuario,contrasena,rol,email) VALUES (?,?,?,?)',
+                    (usuario,password_cifrado,rol,email)
+                    )
+                                
+                db.commit()
+                flash('Usuario creado') 
+
+                yag = yagmail.SMTP('gabetin@uninorte.edu.co', 'Domayor7') 
+                yag.send(to=email, subject='Activa tu cuenta',
+                    contents='Bienvenido, revisa el siguiente link e ingresa con su usuario: '+ usuario + ' cd y contraseña: '  + password + '\n'+ '\n' +'http://127.0.0.1:5000/' )
+                                
+        return render_template("UsuarioSuper.html")
+    except:
+        flash('Falló en el proceso.')
+        return render_template("UsuarioSuper.html")
 
 #---------------------------------------------------------------------------------------------------------
  # Consultar usuarios       
