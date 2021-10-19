@@ -44,10 +44,18 @@ function editarUsuario(usuario){
 
 
 
- function editarProducto (){
-    window.open("/Dashboard/ProductoUsuario/editarProducto","ventana3","width=500,height=700,scrollbars=NO")
+ function editarProducto (producto){
+    window.open("/Dashboard/ProductoUsuario/editarProducto/"+producto+"","ventana3","width=500,height=700,scrollbars=NO")
  }
+
+ function eliminarProducto(producto){
+   window.open("/Dashboard/ProductoUsuario/eliminarProducto/" +producto+ "","ventana2","width=500,height=300,scrollbars=NO")
+}
+
+ 
 
  function editarProveedor (){
     window.open("/Dashboard/ProveedorUsuario/editarProveedor","ventana4","width=500,height=500,scrollbars=NO")
  }
+
+

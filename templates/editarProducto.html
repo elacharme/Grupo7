@@ -18,34 +18,53 @@
                     <div class="card shadow-lg border-0 rounded-lg mt-5">
                         <div class="card-header"><h3 class="text-center font-weight-light my-4">XPENNG</h3></div>
                         <div class="card-body">
-                            <form  name="formSesion"  action=""  method="get" >
+                            <form  name="formEdit"  action="{{ url_for('editar_producto' , nom_producto = productos[0][2]) }} "  method="post" onsubmit="">
+                                
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="usuario" type="text"  />
+                                    <input class="form-control" id="codigo" type="text" value= "{{productos[0][1]}}" name = "codigo" />
                                     <label for="inputEmail">Codigo</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password"  />
+                                    <input class="form-control" id="nombre" type="text" value= "{{productos[0][2]}}" name = "nombre"  />
                                     <label for="inputPassword">Nombre</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password"  />
+                                    <input class="form-control" id="descripcion" type="text" value= "{{productos[0][3]}}" name = "descripcion" />
                                     <label for="inputPassword">Descripción</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password"  />
+                                    <input class="form-control" id="cant_minima" type="text" value= "{{productos[0][4]}}" name = "cant_minima" />
                                     <label for="inputPassword">Cantidad Minima Requerida</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password"  />
+                                    <input class="form-control" id="stock" type="text" value= "{{productos[0][5]}}" name = "stock" />
                                     <label for="inputPassword">Stock</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="contraseña" type="password"  />
+                                    <input class="form-control" id="proveedor"type="text" value= "{{productos[0][6]}}" name = "proveedor" />
                                     <label for="inputPassword">Proveedor</label>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-4 mb-0"> 
                                     <input class="btn btn-primary btn-user btn-block" type="submit" value="Editar">                                           
-                                   </div>                                          
+                                   </div>    
+                                   
+                                   
+                                                {% with messages = get_flashed_messages() %}
+                                                {% if messages %}
+                                                    <ul class=flashes>
+                                                        {% for message in messages %}
+                            
+                                                        <script>
+                                                            window.alert('{{ message }}')                                                        
+                                                        </script>
+                                                            
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            {% endwith %}
+
+
+
                             </form>
                         </div>
                       </div>

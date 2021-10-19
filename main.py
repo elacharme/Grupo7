@@ -14,6 +14,11 @@ from flask import session, g
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+
+
+
+
+
 #--------------------------------------------------------------------------------------------------
 
 # Inicio de session
@@ -246,7 +251,7 @@ def eliminar_usuario(nom_usuario):
                     )
                                             
                 db.commit()
-                flash('Usuario Eliminado')
+                
                 return render_template("eliminarMensaje.html")
             
 
@@ -264,6 +269,256 @@ def eliminar_usuario(nom_usuario):
 
 #----------------------------------------------------------------------------------------
 
+# Crear producto
+
+@app.route('/Dashboard/ProductoAdmin', methods=['GET', 'POST'])
+def producto_admin():
+
+    if request.method == 'POST':                  
+            codigo = request.form['codigo']         
+            nombre = request.form['nombre']
+            descripcion = request.form['descripcion']
+            cant_minima = request.form['cant_minima']         
+            stock = request.form['stock']
+            proveedor = request.form['proveedor']      
+
+            error = None
+            db = get_db()
+
+            if not codigo:
+                error = "Codigo requerido."
+                flash(error)
+            if not nombre:
+                error = "Nombre requerido."
+                flash(error)
+            if not descripcion:
+                error = "Descripcion requerida."
+                flash(error)
+            if not cant_minima:
+                error = "Cantidad minima requerida."
+                flash(error)
+            if not stock:
+                error = "Stock requerido."
+                flash(error)
+            if not proveedor:
+                error = "Proveedor requerido."
+                flash(error)       
+
+            codigo_producto = db.execute(
+                'SELECT * FROM Productos WHERE codigo = ? ', (codigo,) 
+                ).fetchone()
+            print(codigo)
+            if codigo_producto is not None:
+                error = "El codigo del producto ya existe."
+                flash(error)   
+            
+            if error is not None:
+                return render_template("ProductoAdmin.html")
+            else:
+          
+                db.execute(
+                    'INSERT INTO Productos (codigo,nombre,descripcion,cant_minima,stock,proveedor) VALUES (?,?,?,?,?,?)',
+                    (codigo,nombre,descripcion,cant_minima,stock,proveedor)
+                    )
+                                
+                db.commit()
+                flash('Producto creado') 
+
+    return render_template("ProductoAdmin.html") 
+
+#--------------------------------------------------------------------------------------------
+
+
+ # Consultar productos      
+
+@app.route('/Dashboard/ProductoAdmin/select', methods=['GET', 'POST'])
+def consulta_producto_admin():
+
+    if request.method == 'POST':
+   
+
+        nombre = request.form['producto']
+        minima =request.values.get('minima')
+       
+       
+              
+        if not nombre and  minima == 'minima'  :                         
+            db = get_db()
+            productos = db.execute(
+            'SELECT * FROM Productos WHERE stock <  cant_minima'
+            ).fetchall()
+        elif not nombre and  minima is None :            
+            productos = sql_select_productos()
+        elif nombre and minima == 'minima': 
+            flash('La opcion de cantidad minima muestra todos los productos en general cuando tengan un stock por debajo del minimo')
+            db = get_db()
+            productos = db.execute(
+            'SELECT * FROM Productos WHERE stock <  cant_minima'
+            ).fetchall()   
+        else: 
+            db = get_db()
+            productos = db.execute(
+            'SELECT * FROM Productos WHERE nombre = ? ', (nombre,) 
+            ).fetchall()
+            if len(productos) < 1 :
+               error = "Producto NO existe."
+               flash(error)     
+    
+    return render_template("ProductoAdmin.html", productos=productos)
+
+
+
+@app.route('/Dashboard/ProductoUsuario/select', methods=['GET', 'POST'])
+def consulta_producto_usuario():
+
+    if request.method == 'POST':
+   
+
+        nombre = request.form['producto']
+        minima =request.values.get('minima')
+       
+       
+              
+        if not nombre and  minima == 'minima'  :                         
+            db = get_db()
+            productos = db.execute(
+            'SELECT * FROM Productos WHERE stock <  cant_minima'
+            ).fetchall()
+        elif not nombre and  minima is None :            
+            productos = sql_select_productos()
+        elif nombre and minima == 'minima': 
+            flash('La opcion de cantidad minima muestra todos los productos en general cuando tengan un stock por debajo del minimo')
+            db = get_db()
+            productos = db.execute(
+            'SELECT * FROM Productos WHERE stock <  cant_minima'
+            ).fetchall()    
+        else: 
+            db = get_db()
+            productos = db.execute(
+            'SELECT * FROM Productos WHERE nombre = ? ', (nombre,) 
+            ).fetchall()
+            if len(productos) < 1 :
+               error = "Producto NO existe."
+               flash(error)     
+    
+    return render_template("ProductoUsuario.html", productos=productos) 
+
+
+#-------------------------------------------------------------------------------------------------
+
+
+# Para editar pruductos    
+   
+@app.route('/Dashboard/ProductoAdmin/editarProducto/<nom_producto>', methods=['GET', 'POST'])
+@app.route('/Dashboard/ProductoUsuario/editarProducto/<nom_producto>', methods=['GET', 'POST'])
+def editar_producto(nom_producto):
+    if request.method == 'POST':  
+
+            codigo = request.form['codigo']         
+            nombre = request.form['nombre']
+            descripcion = request.form['descripcion']
+            cant_minima = request.form['cant_minima']         
+            stock = request.form['stock']
+            proveedor = request.form['proveedor']   
+
+            error = None
+            db = get_db()
+
+            if not codigo:
+                error = "Codigo requerido."
+                flash(error)
+            if not nombre:
+                error = "Nombre requerido."
+                flash(error)
+            if not descripcion:
+                error = "Descripcion requerida."
+                flash(error)
+            if not cant_minima:
+                error = "Cantidad minima requerida."
+                flash(error)
+            if not stock:
+                error = "Stock requerido."
+                flash(error)
+            if not proveedor:
+                error = "Proveedor requerido."
+                flash(error)       
+
+                   
+            if error is not None:
+                return render_template("editarProducto.html")
+            else:
+            
+               
+                db.execute(
+                    'UPDATE Productos SET codigo = ?,nombre = ?,descripcion = ?, cant_minima =?, stock = ?, proveedor = ? WHERE nombre = ?',
+                    (codigo,nombre,descripcion,cant_minima,stock,proveedor,nombre )
+                    )
+                                             
+                db.commit()
+                flash('Producto Editado')
+                productos = db.execute(
+                    'SELECT * FROM Productos WHERE nombre = ? ', (nom_producto,) 
+                    ).fetchall()
+                print(productos)   
+                return render_template("editarProducto.html",  productos = productos , nom_producto=nom_producto)
+         
+    else:
+              
+        db = get_db()
+        productos = db.execute(
+            'SELECT * FROM Productos WHERE nombre = ? ', (nom_producto,) 
+            ).fetchall()
+        print(productos)   
+        return render_template("editarProducto.html",   productos = productos , nom_producto=nom_producto)
+
+
+#--------------------------------------------------------------------------------------------
+
+
+#Para Eliminar producto
+
+@app.route('/Dashboard/ProductoAdmin/eliminarProducto/<nom_producto>', methods=['GET', 'POST'])
+@app.route('/Dashboard/ProductoUsuario/eliminarProducto/<nom_producto>', methods=['GET', 'POST'])    
+def eliminar_producto(nom_producto):
+    if request.method == 'POST':                  
+            nombre = request.form['nombre']         
+               
+
+            error = None
+            db = get_db()
+
+            if not nombre:
+                error = "Nombre del producto requerido requerido."
+                flash(error)
+                             
+            if error is not None:
+                return render_template("eliminarProducto.html")
+            else:
+            
+                db.execute(
+                    'DELETE FROM Productos WHERE nombre = ?',
+                    (nombre,)
+                    )
+                                            
+                db.commit()
+                
+                return render_template("eliminarMensajeProducto.html")
+            
+
+
+    else:
+        db = get_db()
+        productos = db.execute(
+            'SELECT * FROM Productos WHERE nombre = ? ', (nom_producto,) 
+            ).fetchall()
+        print(productos)
+        
+        return render_template("eliminarProducto.html",  productos = productos , nom_producto=nom_producto)
+
+
+
+
+
 
 #--------------------------------------------------------------------------------------------
 
@@ -278,13 +533,13 @@ def usuario_admin():
     return render_template("UsuarioAdmin.html")    
 
 
-@app.route('/Dashboard/ProductoAdmin', methods=['GET', 'POST'])
-def producto_admin():
-    return render_template("ProductoAdmin.html")    
-
 @app.route('/Dashboard/ProductoUsuario', methods=['GET', 'POST'])
 def producto_usuario():
-    return render_template("ProductoUsuario.html")   
+    return render_template("ProductoUsuario.html")
+
+
+# ------------------
+      
 
 @app.route('/Dashboard/ProveedorAdmin', methods=['GET', 'POST'])
 def proveedor_admin():
@@ -294,12 +549,6 @@ def proveedor_admin():
 def proveedor_empleado():
     return render_template("ProveedorEmpleado.html")   
 
-#-------------------------------------------------------------------------------------
-
-@app.route('/Dashboard/ProductoUsuario/editarProducto', methods=['GET', 'POST'])
-@app.route('/Dashboard/ProductoAdmin/editarProducto', methods=['GET', 'POST'])
-def editar_producto():
-    return render_template("editarProducto.html")  
 
 
 @app.route('/Dashboard/ProveedorUsuario/editarProveedor', methods=['GET', 'POST'])
@@ -318,6 +567,19 @@ def sql_select_usuarios():
     usuarios= cursoObj.fetchall()  # [ [47,"Monitor",368000.0,23], [99,"Mouse",25000.0,64] ]
     print(usuarios)
     return usuarios
+
+def sql_select_productos():
+    sql = "SELECT * FROM Productos"
+    conn = get_db()
+    cursoObj = conn.cursor()
+    cursoObj.execute(sql)
+    productos= cursoObj.fetchall()  # [ [47,"Monitor",368000.0,23], [99,"Mouse",25000.0,64] ]
+    print(productos)
+    return productos
+
+
+
+
 
 
 #--------------------------------------------------------------------------------------------------
