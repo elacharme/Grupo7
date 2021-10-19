@@ -101,13 +101,13 @@
 
           <div class="row">
                   <div class="col" > 
-                    <input class="form-control me-sm-2" type="text" placeholder="Nombre" name="usuario" id="usuario">
+                    <input class="form-control me-sm-2" type="text" placeholder="Usuario" name="usuario" id="usuario">
                     
                   </div>
 
                   <div class="col">
                     
-                    <input class="form-control me-sm-2" type="text" placeholder="Contraseña" name="password" id="password">  
+                    <input class="form-control me-sm-2" type="text" placeholder="Email" name="email" id="email">  
                   </div>
 
                   <div class="col">
@@ -164,8 +164,8 @@
           <thead>
             <tr>
               <th class="table-primary" scope="col">Id</th>
-              <th class="table-primary" scope="col">Nombre</th>
-              <th class="table-primary"  scope="col">Contraseña</th>
+              <th class="table-primary" scope="col">Usuario</th>
+              <th class="table-primary"  scope="col">Email</th>
               <th class="table-primary"  scope="col">Rol</th>  
               <th class="table-primary"  scope="col">Editar</th>  
               <th class="table-primary" scope="col">Eliminar</th>              
@@ -173,13 +173,13 @@
           </thead>
 
 
-          <tbody>s
+          <tbody>
             <tr class="table-active"></tr>
               {% for usu in usuarios %}
               
                 <th  scope="row">{% print(usu[0]) %}</th>
                 <td >{% print(usu[1]) %}</td>
-                <td >{% print(usu[2]) %}</td>
+                <td >{% print(usu[4]) %}</td>
                 <td >{% print(usu[3]) %}</td>
                 <td > <a href="#" onclick="editarUsuario('{{usu[1]}}')">Editar</a>   </td>
                 <td > <a href="#" onclick="eliminarUsuario('{{usu[1]}}')">Eliminar</a>   </td>
