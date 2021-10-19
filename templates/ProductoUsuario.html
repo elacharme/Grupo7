@@ -97,11 +97,11 @@
 
 	<div class="row">
 
-                  <form class="d-flex">
+              <form class="d-flex" action="{{ url_for('consulta_producto_usuario') }}" method="post" onsubmit="">
 
                   <div class="col-sm-9">
 
-                       <input class="form-control me-sm-2" type="text" placeholder="Buscar productos">
+                       <input class="form-control me-sm-2" type="text" placeholder="Buscar productos" name="producto" id="producto">
                                      
                   </div>
 
@@ -111,12 +111,28 @@
                     
                   <div class="col-sm"> 
                                     
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> 
+                      <input class="form-check-input" type="checkbox" value="minima" id="flexCheckDefault" name="minima"> 
                       <label class="form-check-label" for="flexCheckDefault">
                          Cantidad Minima
                        </label>
 
                    </div> 
+
+
+
+                                {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    <ul class=flashes>
+                                        {% for message in messages %}
+
+                                        <script>
+                                            window.alert('{{ message }}')                                                        
+                                        </script>
+                                          
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            {% endwith %}
 
                   </form>
                 </div>   
@@ -141,21 +157,26 @@
                 <th class="table-primary" scope="col">Cantidad Minima Rquerida</th>
                 <th class="table-primary"  scope="col">Stock</th>
                 <th class="table-primary"  scope="col">Proveedor</th> 
+                <th class="table-primary"  scope="col">Editar</th>  
+                <th class="table-primary" scope="col">Eliminar</th>  > 
            
               </tr>
             </thead>
             <tbody>
               <tr class="table-active">
-                <th  scope="row">001</th>
-                <td >Tax001</td>
-                <td >Taxi</td>
-                <td >Servicio Publico</td>
-                <td >10</td>
-                <td >15</td>
-                <td >Taxis a la venta</td>                
-
-              </tr>
-  
+                {% for pro in productos %}   
+                
+                  <th  scope="row">{% print(pro[0]) %}</th>
+                  <td >{% print(pro[1]) %}</td>
+                  <td >{% print(pro[2]) %}</td>
+                  <td >{% print(pro[3]) %}</td>
+                  <td >{% print(pro[4]) %}</td>  
+                  <td >{% print(pro[5]) %}</td>
+                  <td >{% print(pro[6]) %}</td>
+                  <td > <a href="#" onclick="editarProducto('{{pro[2]}}')">Editar</a>   </td>
+                  <td > <a href="#" onclick="eliminarProducto('{{pro[2]}}')">Eliminar</a>   </td>
+                </tr>
+                {% endfor %}  
                      
             
             </tbody>
