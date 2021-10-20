@@ -19,9 +19,6 @@ app.secret_key = os.urandom(24)
 
 
 
-
-
-
 #--------------------------------------------------------------------------------------------------
 
 # Inicio de session PARA VER SU CAMBIA ESTA VAINA
